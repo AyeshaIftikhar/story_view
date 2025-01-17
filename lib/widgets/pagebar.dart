@@ -40,7 +40,7 @@ class PageBarState extends State<PageBar> {
     spacing = (count > 15) ? 2 : ((count > 10) ? 3 : 4);
 
     widget.animation!.addListener(() {
-      setState(() {});
+    if(mounted) setState(() {});
     });
   }
 
