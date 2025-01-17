@@ -199,7 +199,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   }
 
   void _beginPlay() {
-    setState(() {});
+   if (mounted) setState(() {});
     _play();
   }
 
