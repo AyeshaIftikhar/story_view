@@ -126,7 +126,7 @@ class StoryImageState extends State<StoryImage> {
       _timer = Timer(nextFrame.duration, forward);
     }
 
-   if (mounted) setState(() {});
+    if (mounted) setState(() {});
   }
 
   Widget getContentView() {
