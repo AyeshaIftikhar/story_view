@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -30,7 +31,11 @@ class StoryVideo extends StatefulWidget {
     Widget? errorWidget,
   }) {
     return StoryVideo(
-      VideoLoader(url, requestHeaders: requestHeaders),
+      VideoLoader(
+        url,
+        url.endsWith('.m3u8'),
+        requestHeaders: requestHeaders,
+      ),
       storyController: controller,
       key: key,
       loadingWidget: loadingWidget,
@@ -50,46 +55,79 @@ class StoryVideoState extends State<StoryVideo> {
   StreamSubscription? _streamSubscription;
 
   VideoPlayerController? playerController;
+  ChewieController? chewieController;
 
   @override
   void initState() {
     super.initState();
+    initializeVideo();
+  }
 
-    widget.storyController!.pause();
+  initializeVideo() async {
+    try {
+      widget.storyController!.pause();
 
-    widget.videoLoader.loadVideo(() {
-      if (widget.videoLoader.state == LoadState.success) {
-        playerController =
-            VideoPlayerController.file(widget.videoLoader.videoFile!);
+      widget.videoLoader.loadVideo(() async {
+        if (widget.videoLoader.state == LoadState.success) {
+          playerController = widget.videoLoader.isHLS
+              ? VideoPlayerController.networkUrl(
+                  Uri.parse(widget.videoLoader.url),
+                  httpHeaders:
+                      widget.videoLoader.requestHeaders as Map<String, String>,
+                )
+              : VideoPlayerController.file(widget.videoLoader.videoFile!);
 
-        playerController!.initialize().then((v) {
+          // Ensure the player is initialized
+          await playerController!.initialize();
+
+          // Initialize the ChewieController
+          chewieController = ChewieController(
+            videoPlayerController: playerController!,
+            autoInitialize: true,
+            autoPlay: true,
+            looping: true,
+            showControls: true,
+          );
+
+          // Resume the story controller playback
+          widget.storyController?.play();
+          debugPrint('video initialized');
+          // Listen to the video player controller for playback state changes
+          // and update the Chewie controller accordingly
+          if (widget.storyController != null) {
+            _streamSubscription = widget.storyController!.playbackNotifier
+                .listen((playbackState) {
+              if (playbackState == PlaybackState.pause) {
+                chewieController!.videoPlayerController.pause();
+              } else {
+                chewieController!.videoPlayerController.play();
+              }
+            });
+          }
+          // Update the state to reflect the video initialization
+          // and notify the story controller
           if (mounted) setState(() {});
-          widget.storyController!.play();
-        });
-
-        if (widget.storyController != null) {
-          _streamSubscription =
-              widget.storyController!.playbackNotifier.listen((playbackState) {
-            if (playbackState == PlaybackState.pause) {
-              playerController!.pause();
-            } else {
-              playerController!.play();
-            }
-          });
+          debugPrint('✅ Video initialized successfully.');
+        } else {
+          debugPrint('❌ Video loading failed.');
+          if (mounted) setState(() {});
         }
-      } else {
-        if (mounted) setState(() {});
-      }
-    });
+      });
+    } catch (e, trace) {
+      debugPrint('❌ Error initializing video: $e');
+      debugPrint('🛠 StackTrace: $trace');
+    }
   }
 
   Widget getContentView() {
     if (widget.videoLoader.state == LoadState.success &&
-        playerController!.value.isInitialized) {
+        chewieController != null &&
+        chewieController!.videoPlayerController.value.isInitialized) {
       return Center(
         child: AspectRatio(
-          aspectRatio: playerController!.value.aspectRatio,
-          child: VideoPlayer(playerController!),
+          aspectRatio:
+              chewieController!.videoPlayerController.value.aspectRatio,
+          child: Chewie(controller: chewieController!),
         ),
       );
     }
@@ -127,7 +165,9 @@ class StoryVideoState extends State<StoryVideo> {
 
   @override
   void dispose() {
+    // Dispose of the controllers and subscriptions
     playerController?.dispose();
+    chewieController?.dispose();
     _streamSubscription?.cancel();
     super.dispose();
   }

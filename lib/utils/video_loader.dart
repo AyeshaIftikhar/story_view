@@ -6,23 +6,34 @@ import '../utils.dart';
 
 class VideoLoader {
   String url;
-
   File? videoFile;
+  bool isHLS = false;
 
   Map<String, dynamic>? requestHeaders;
 
   LoadState state = LoadState.loading;
 
-  VideoLoader(this.url, {this.requestHeaders});
+  VideoLoader(this.url, this.isHLS, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
+    debugPrint('fetcheed url: $url');
+    debugPrint('isHLS: $isHLS');
+    // Check if the URL is an HLS stream
+    if (isHLS) {
+      state = LoadState.success;
+      onComplete();
+      return;
+    }
+
     if (videoFile != null) {
       state = LoadState.success;
       onComplete();
     }
 
-    final fileStream = DefaultCacheManager()
-        .getFileStream(url, headers: requestHeaders as Map<String, String>?);
+    final fileStream = DefaultCacheManager().getFileStream(
+      url,
+      headers: requestHeaders as Map<String, String>?,
+    );
 
     fileStream.listen((fileResponse) {
       if (fileResponse is FileInfo) {

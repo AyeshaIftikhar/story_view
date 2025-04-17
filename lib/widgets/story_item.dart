@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 import '../controller/story_controller.dart';
@@ -163,6 +165,10 @@ class StoryItem {
       Center(
         child: ClipRRect(
           key: key,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(roundedTop ? 8 : 0),
+            bottom: Radius.circular(roundedBottom ? 8 : 0),
+          ),
           child: Container(
             color: Colors.grey[100],
             child: Container(
@@ -192,8 +198,8 @@ class StoryItem {
                         child: Align(
                           alignment: Alignment.bottomLeft,
                           child: SizedBox(
-                            child: caption,
                             width: double.infinity,
+                            child: caption,
                           ),
                         ),
                       ),
@@ -202,10 +208,6 @@ class StoryItem {
                 ],
               ),
             ),
-          ),
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(roundedTop ? 8 : 0),
-            bottom: Radius.circular(roundedBottom ? 8 : 0),
           ),
         ),
       ),
@@ -364,8 +366,8 @@ class StoryItem {
           child: Align(
             alignment: Alignment.bottomLeft,
             child: SizedBox(
-              child: caption ?? const SizedBox(),
               width: double.infinity,
+              child: caption ?? const SizedBox(),
             ),
           ),
         ),

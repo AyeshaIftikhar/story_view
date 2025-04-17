@@ -113,7 +113,9 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
     // false
     final firstPage = widget.storyItems.firstWhereOrNull((it) => !it!.shown);
     if (firstPage == null) {
-      for (var it2 in widget.storyItems) it2!.shown = false;
+      for (var it2 in widget.storyItems) {
+        it2!.shown = false;
+      }
     } else {
       final lastShownPos = widget.storyItems.indexOf(firstPage);
       widget.storyItems.sublist(lastShownPos).forEach((it) {
@@ -356,10 +358,10 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
             alignment: Alignment.centerLeft,
             heightFactor: 1,
             child: SizedBox(
+              width: 70,
               child: GestureDetector(
                 onTap: () => widget.controller.previous(),
               ),
-              width: 70,
             ),
           ),
         ],
