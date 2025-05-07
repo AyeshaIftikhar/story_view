@@ -231,7 +231,7 @@ class StoryItem {
     Widget? errorWidget,
     Widget? bottom,
     required bool looping,
-    required bool hideControlsOnInt,
+    required bool showControlsOnInit,
     required bool fullScreen,
   }) {
     return StoryItem(
@@ -249,7 +249,7 @@ class StoryItem {
                   loadingWidget: loadingWidget,
                   errorWidget: errorWidget,
                   looping: looping,
-                  hideControlsOnInt: hideControlsOnInt,
+                  showControlsOnInit: showControlsOnInit,
                   fullScreen: fullScreen,
                 ),
               ),

@@ -14,7 +14,7 @@ class StoryVideo extends StatefulWidget {
   final Widget? loadingWidget;
   final Widget? errorWidget;
   final bool looping;
-  final bool hideControlsOnInt, fullScreen;
+  final bool showControlsOnInt, fullScreen;
 
   StoryVideo(
     this.videoLoader, {
@@ -23,7 +23,7 @@ class StoryVideo extends StatefulWidget {
     this.loadingWidget,
     this.errorWidget,
     required this.looping,
-    required this.hideControlsOnInt,
+    required this.showControlsOnInt,
     required this.fullScreen,
   }) : super(key: key ?? UniqueKey());
 
@@ -35,7 +35,7 @@ class StoryVideo extends StatefulWidget {
     Widget? loadingWidget,
     Widget? errorWidget,
     required bool looping,
-    required bool hideControlsOnInt,
+    required bool showControlsOnInit,
     required bool fullScreen,
   }) {
     return StoryVideo(
@@ -49,7 +49,7 @@ class StoryVideo extends StatefulWidget {
       loadingWidget: loadingWidget,
       errorWidget: errorWidget,
       looping: looping,
-      hideControlsOnInt: hideControlsOnInt,
+      showControlsOnInt: showControlsOnInit,
       fullScreen: fullScreen,
     );
   }
@@ -98,7 +98,7 @@ class StoryVideoState extends State<StoryVideo> {
             autoPlay: true,
             looping: widget.looping,
             showControls: true,
-            showControlsOnInitialize: !widget.hideControlsOnInt,
+            showControlsOnInitialize: widget.showControlsOnInt,
             fullScreenByDefault: widget.fullScreen,
           );
 
