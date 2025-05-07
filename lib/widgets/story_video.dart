@@ -13,6 +13,8 @@ class StoryVideo extends StatefulWidget {
   final VideoLoader videoLoader;
   final Widget? loadingWidget;
   final Widget? errorWidget;
+  final bool looping;
+  final bool hideControlsOnInt, fullScreen;
 
   StoryVideo(
     this.videoLoader, {
@@ -20,6 +22,9 @@ class StoryVideo extends StatefulWidget {
     this.storyController,
     this.loadingWidget,
     this.errorWidget,
+    required this.looping,
+    required this.hideControlsOnInt,
+    required this.fullScreen,
   }) : super(key: key ?? UniqueKey());
 
   static StoryVideo url(
@@ -29,6 +34,9 @@ class StoryVideo extends StatefulWidget {
     Key? key,
     Widget? loadingWidget,
     Widget? errorWidget,
+    required bool looping,
+    required bool hideControlsOnInt,
+    required bool fullScreen,
   }) {
     return StoryVideo(
       VideoLoader(
@@ -40,6 +48,9 @@ class StoryVideo extends StatefulWidget {
       key: key,
       loadingWidget: loadingWidget,
       errorWidget: errorWidget,
+      looping: looping,
+      hideControlsOnInt: hideControlsOnInt,
+      fullScreen: fullScreen,
     );
   }
 
@@ -85,8 +96,10 @@ class StoryVideoState extends State<StoryVideo> {
             videoPlayerController: playerController!,
             autoInitialize: true,
             autoPlay: true,
-            looping: true,
+            looping: widget.looping,
             showControls: true,
+            showControlsOnInitialize: !widget.hideControlsOnInt,
+            fullScreenByDefault: widget.fullScreen,
           );
 
           // Resume the story controller playback

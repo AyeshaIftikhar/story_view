@@ -230,6 +230,9 @@ class StoryItem {
     Widget? loadingWidget,
     Widget? errorWidget,
     Widget? bottom,
+    required bool looping,
+    required bool hideControlsOnInt,
+    required bool fullScreen,
   }) {
     return StoryItem(
       Center(
@@ -245,6 +248,9 @@ class StoryItem {
                   requestHeaders: requestHeaders,
                   loadingWidget: loadingWidget,
                   errorWidget: errorWidget,
+                  looping: looping,
+                  hideControlsOnInt: hideControlsOnInt,
+                  fullScreen: fullScreen,
                 ),
               ),
               SafeArea(
