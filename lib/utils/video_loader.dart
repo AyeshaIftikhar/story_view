@@ -16,6 +16,7 @@ class VideoLoader {
   VideoLoader(this.url, this.isHLS, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
+    state = LoadState.loading;
     debugPrint('fetcheed url: $url');
     debugPrint('isHLS: $isHLS');
     // Check if the URL is an HLS stream
