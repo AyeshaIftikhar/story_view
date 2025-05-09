@@ -83,8 +83,10 @@ class StoryVideoState extends State<StoryVideo> {
           playerController = widget.videoLoader.isHLS
               ? VideoPlayerController.networkUrl(
                   Uri.parse(widget.videoLoader.url),
-                  httpHeaders:
-                      widget.videoLoader.requestHeaders as Map<String, String>,
+                  httpHeaders: widget.videoLoader.requestHeaders == null
+                      ? <String, String>{}
+                      : widget.videoLoader.requestHeaders
+                          as Map<String, String>,
                 )
               : VideoPlayerController.file(widget.videoLoader.videoFile!);
 
